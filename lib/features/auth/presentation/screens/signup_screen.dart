@@ -15,39 +15,35 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-  TextEditingController();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
-  bool _isLoading = false;
+  bool loading = false;
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
-  Future<void> _signup() async {
+  Future<void> signup() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
-      _isLoading = true;
+      loading = true;
     });
 
-    // TODO: Replace with backend registration.
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(
+      const Duration(seconds: 2),
+    );
 
     if (!mounted) return;
 
     setState(() {
-      _isLoading = false;
+      loading = false;
     });
 
     Navigator.pushReplacementNamed(
@@ -60,8 +56,9 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Account'),
+        title: const Text("Create Account"),
       ),
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -69,137 +66,66 @@ class _SignupScreenState extends State<SignupScreen> {
             key: _formKey,
             child: Column(
               children: [
+
                 const SizedBox(height: 20),
 
                 const AuthHeader(
-                  title: 'Create Account',
+                  title: "Create Account",
                   subtitle:
-                  'Start managing your health records securely.',
+                  "Create your Digital Health Passport.",
                 ),
 
-                const SizedBox(height: 40),
+                const SizedBox(height: 35),
 
                 CustomTextField(
-                  controller: _nameController,
-                  label: 'Full Name',
-                  hintText: 'Enter your full name',
-                  prefixIcon: Icons.person_outline,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Full name is required';
-                    }
-                    return null;
-                  },
+                  controller: nameController,
+                  label: "Full Name",
+                  hintText: "Enter your name",
+                  prefixIcon: Icons.person,
+                  validator: (v) =>
+                  v!.isEmpty ? "Required" : null,
                 ),
 
-                const SizedBox(height: 18),
+                const SizedBox(height: 20),
 
                 CustomTextField(
-                  controller: _emailController,
-                  label: 'Email',
-                  hintText: 'Enter your email',
-                  keyboardType: TextInputType.emailAddress,
-                  prefixIcon: Icons.email_outlined,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Email is required';
-                    }
-
-                    if (!value.contains('@')) {
-                      return 'Enter a valid email';
-                    }
-
-                    return null;
-                  },
+                  controller: emailController,
+                  label: "Email",
+                  hintText: "Enter email",
+                  prefixIcon: Icons.email,
+                  validator: (v) =>
+                  v!.contains("@") ? null : "Invalid email",
                 ),
 
-                const SizedBox(height: 18),
+                const SizedBox(height: 20),
 
                 CustomTextField(
-                  controller: _phoneController,
-                  label: 'Phone Number',
-                  hintText: 'Enter your phone number',
-                  keyboardType: TextInputType.phone,
-                  prefixIcon: Icons.phone_outlined,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Phone number is required';
-                    }
-
-                    if (value.length < 10) {
-                      return 'Enter a valid phone number';
-                    }
-
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 18),
-
-                CustomTextField(
-                  controller: _passwordController,
-                  label: 'Password',
-                  hintText: 'Create a password',
+                  controller: passwordController,
+                  label: "Password",
+                  hintText: "Minimum 6 characters",
                   obscureText: true,
-                  prefixIcon: Icons.lock_outline,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password is required';
-                    }
-
-                    if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
-                    }
-
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 18),
-
-                CustomTextField(
-                  controller: _confirmPasswordController,
-                  label: 'Confirm Password',
-                  hintText: 'Re-enter your password',
-                  obscureText: true,
-                  prefixIcon: Icons.lock_reset_outlined,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please confirm your password';
-                    }
-
-                    if (value != _passwordController.text) {
-                      return 'Passwords do not match';
-                    }
-
-                    return null;
-                  },
+                  prefixIcon: Icons.lock,
+                  validator: (v) =>
+                  v!.length >= 6 ? null : "Too short",
                 ),
 
                 const SizedBox(height: 30),
 
                 PrimaryButton(
-                  text: 'Create Account',
-                  isLoading: _isLoading,
-                  onPressed: _signup,
+                  text: "Create Account",
+                  isLoading: loading,
+                  onPressed: signup,
                 ),
 
-                const SizedBox(height: 25),
+                const SizedBox(height: 20),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Already have an account?'),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          AppRoutes.login,
-                        );
-                      },
-                      child: const Text('Login'),
-                    ),
-                  ],
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    "Already have an account? Login",
+                  ),
                 ),
               ],
             ),

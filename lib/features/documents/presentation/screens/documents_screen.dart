@@ -1,140 +1,125 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+
 class DocumentsScreen extends StatelessWidget {
   const DocumentsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Temporary sample data
-    final List<Map<String, String>> documents = [
-      {
-        'title': 'Blood Test Report',
-        'date': '12 Jun 2026',
-        'category': 'Lab Report',
-      },
-      {
-        'title': 'COVID-19 Vaccination',
-        'date': '20 May 2026',
-        'category': 'Vaccination',
-      },
-      {
-        'title': 'Prescription',
-        'date': '08 Apr 2026',
-        'category': 'Medication',
-      },
-    ];
-
     return Scaffold(
+      backgroundColor: AppColors.background,
+
       appBar: AppBar(
-        title: const Text('Health Documents'),
+        title: const Text("Medical Documents"),
+        centerTitle: true,
       ),
+
       floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColors.primary,
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Document upload will be added soon.'),
+              content: Text("Upload feature coming soon!"),
             ),
           );
         },
-        child: const Icon(Icons.upload_file),
+        child: const Icon(Icons.add),
       ),
-      body: Padding(
+
+      body: ListView(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Search documents...',
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.grey.shade100,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
+        children: const [
 
-            const SizedBox(height: 24),
+          DocumentCard(
+            icon: Icons.description,
+            color: Colors.blue,
+            title: "Blood Test Report",
+            subtitle: "Uploaded on 10 July 2026",
+          ),
 
-            Expanded(
-              child: documents.isEmpty
-                  ? const _EmptyDocuments()
-                  : ListView.separated(
-                itemCount: documents.length,
-                separatorBuilder: (_, __) =>
-                const SizedBox(height: 14),
-                itemBuilder: (context, index) {
-                  final document = documents[index];
+          SizedBox(height: 16),
 
-                  return Card(
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor:
-                        AppColors.primary.withValues(alpha: 0.15),
-                        child: const Icon(
-                          Icons.description,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      title: Text(document['title']!),
-                      subtitle: Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          Text(document['category']!),
-                          Text(document['date']!),
-                        ],
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.more_vert),
-                        onPressed: () {},
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+          DocumentCard(
+            icon: Icons.medical_services,
+            color: Colors.green,
+            title: "Prescription",
+            subtitle: "Uploaded on 04 July 2026",
+          ),
+
+          SizedBox(height: 16),
+
+          DocumentCard(
+            icon: Icons.vaccines,
+            color: Colors.orange,
+            title: "Vaccination Certificate",
+            subtitle: "Uploaded on 20 June 2026",
+          ),
+
+          SizedBox(height: 16),
+
+          DocumentCard(
+            icon: Icons.local_hospital,
+            color: Colors.red,
+            title: "MRI Scan",
+            subtitle: "Uploaded on 12 May 2026",
+          ),
+        ],
       ),
     );
   }
 }
 
-class _EmptyDocuments extends StatelessWidget {
-  const _EmptyDocuments();
+class DocumentCard extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+
+  const DocumentCard({
+    super.key,
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.folder_open,
-            size: 90,
-            color: Colors.grey.shade400,
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(16),
+
+        leading: CircleAvatar(
+          radius: 28,
+          backgroundColor: color.withOpacity(.15),
+          child: Icon(
+            icon,
+            color: color,
+            size: 30,
           ),
-          const SizedBox(height: 20),
-          const Text(
-            'No Documents Yet',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+        ),
+
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
           ),
-          const SizedBox(height: 10),
-          const Text(
-            'Upload your first medical document\nand access it anytime.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 15,
-            ),
-          ),
-        ],
+        ),
+
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Text(subtitle),
+        ),
+
+        trailing: const Icon(
+          Icons.arrow_forward_ios,
+          size: 18,
+        ),
       ),
     );
   }

@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../core/constants/app_colors.dart';
+
 class QrPassportScreen extends StatelessWidget {
   const QrPassportScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const qrData = "MediSync|John Doe|O+|ID:MS001";
+
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Emergency QR Passport'),
+        title: const Text("Health Passport"),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
             Card(
-              elevation: 2,
+              elevation: 3,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -24,19 +30,19 @@ class QrPassportScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     const CircleAvatar(
-                      radius: 40,
-                      backgroundColor: AppColors.primary,
+                      radius: 45,
+                      backgroundColor: AppColors.primaryLight,
                       child: Icon(
                         Icons.person,
-                        color: Colors.white,
-                        size: 42,
+                        size: 50,
+                        color: AppColors.primary,
                       ),
                     ),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
 
                     const Text(
-                      'John Doe',
+                      "John Doe",
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -46,117 +52,37 @@ class QrPassportScreen extends StatelessWidget {
                     const SizedBox(height: 6),
 
                     const Text(
-                      'Digital Health Passport',
+                      "Digital Health Passport",
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 16,
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    QrImageView(
+                      data: qrData,
+                      version: QrVersions.auto,
+                      size: 220,
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    const Text(
+                      "Passport ID",
                       style: TextStyle(
                         color: AppColors.textSecondary,
                       ),
                     ),
 
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 5),
 
-                    Container(
-                      height: 220,
-                      width: 220,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppColors.primary,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.qr_code_2,
-                          size: 150,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    const Divider(),
-
-                    const SizedBox(height: 16),
-
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Blood Group',
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                        Text(
-                          'O+',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Allergies',
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                        Text(
-                          'Peanuts',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Emergency Contact',
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                        Text(
-                          '+91 9876543210',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            const Card(
-              child: Padding(
-                padding: EdgeInsets.all(18),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.info_outline,
-                      color: Colors.blue,
-                    ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'In an emergency, medical staff can scan your QR code to securely access your essential health information.',
+                    const Text(
+                      "MS001",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
                     ),
                   ],
@@ -166,42 +92,42 @@ class QrPassportScreen extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton.icon(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Share feature coming soon.',
-                          ),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.share),
-                    label: const Text('Share'),
-                  ),
-                ),
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Download feature coming soon!",
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.download),
+                label: const Text("Download QR"),
+              ),
+            ),
 
-                const SizedBox(width: 16),
+            const SizedBox(height: 15),
 
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Download feature coming soon.',
-                          ),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.download),
-                    label: const Text('Download'),
-                  ),
-                ),
-              ],
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Share feature coming soon!",
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.share),
+                label: const Text("Share QR"),
+              ),
             ),
           ],
         ),

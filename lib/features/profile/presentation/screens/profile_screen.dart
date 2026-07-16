@@ -1,127 +1,135 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_colors.dart';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  Widget buildProfileTile(
+      IconData icon,
+      String title,
+      String value,
+      ) {
+    return Card(
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: AppColors.primaryLight,
+          child: Icon(
+            icon,
+            color: AppColors.primary,
+          ),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(value),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
+      backgroundColor: AppColors.background,
+
       appBar: AppBar(
-        title: const Text('My Profile'),
+        title: const Text("My Profile"),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              const CircleAvatar(
-                radius: 55,
-                child: Icon(
-                  Icons.person,
-                  size: 60,
-                ),
+
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const CircleAvatar(
+              radius: 55,
+              backgroundColor: AppColors.primaryLight,
+              child: Icon(
+                Icons.person,
+                size: 60,
+                color: AppColors.primary,
               ),
+            ),
 
-              const SizedBox(height: 16),
+            const SizedBox(height: 15),
 
-              Text(
-                'John Doe',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            const Text(
+              "John Doe",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
+            ),
 
-              Text(
-                'john.doe@email.com',
-                style: theme.textTheme.bodyMedium,
+            const SizedBox(height: 5),
+
+            const Text(
+              "john@example.com",
+              style: TextStyle(
+                color: AppColors.textSecondary,
               ),
+            ),
 
-              const SizedBox(height: 24),
+            const SizedBox(height: 30),
 
-              Card(
-                elevation: 0,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: const Icon(Icons.badge),
-                        title: const Text('Age'),
-                        subtitle: const Text('24 Years'),
+            buildProfileTile(
+              Icons.badge,
+              "Full Name",
+              "John Doe",
+            ),
+
+            buildProfileTile(
+              Icons.cake,
+              "Date of Birth",
+              "12 May 2004",
+            ),
+
+            buildProfileTile(
+              Icons.bloodtype,
+              "Blood Group",
+              "O+",
+            ),
+
+            buildProfileTile(
+              Icons.phone,
+              "Phone Number",
+              "+91 9876543210",
+            ),
+
+            buildProfileTile(
+              Icons.location_on,
+              "Address",
+              "Hyderabad, India",
+            ),
+
+            const SizedBox(height: 25),
+
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Edit Profile coming soon!",
                       ),
-                      const Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.bloodtype),
-                        title: const Text('Blood Group'),
-                        subtitle: const Text('O+'),
-                      ),
-                      const Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.monitor_weight),
-                        title: const Text('Weight'),
-                        subtitle: const Text('70 kg'),
-                      ),
-                      const Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.height),
-                        title: const Text('Height'),
-                        subtitle: const Text('175 cm'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              Card(
-                elevation: 0,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: const [
-                      ListTile(
-                        leading: Icon(Icons.medical_services),
-                        title: Text('Allergies'),
-                        subtitle: Text('No known allergies'),
-                      ),
-                      Divider(),
-                      ListTile(
-                        leading: Icon(Icons.favorite),
-                        title: Text('Medical Conditions'),
-                        subtitle: Text('None'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              Card(
-                elevation: 0,
-                child: const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: ListTile(
-                    leading: Icon(Icons.contact_phone),
-                    title: Text('Emergency Contact'),
-                    subtitle: Text('+91 9876543210'),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 30),
-
-              FilledButton.icon(
-                onPressed: () {},
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.edit),
-                label: const Text('Edit Profile'),
+                label: const Text("Edit Profile"),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

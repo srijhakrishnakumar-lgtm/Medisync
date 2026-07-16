@@ -6,51 +6,50 @@ import '../../../../routes/app_routes.dart';
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
+  Widget settingTile({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    Color? color,
+  }) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor:
+          (color ?? AppColors.primary).withOpacity(0.15),
+          child: Icon(
+            icon,
+            color: color ?? AppColors.primary,
+          ),
+        ),
+        title: Text(title),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: onTap,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
+
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: const Text("Settings"),
+        centerTitle: true,
       ),
+
       body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.all(20),
         children: [
-          const Center(
-            child: CircleAvatar(
-              radius: 42,
-              child: Icon(
-                Icons.person,
-                size: 45,
-              ),
-            ),
-          ),
 
-          const SizedBox(height: 12),
-
-          const Center(
-            child: Text(
-              'John Doe',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-
-          const Center(
-            child: Text(
-              'john.doe@email.com',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 30),
-
-          _SettingsTile(
-            icon: Icons.person_outline,
-            title: 'Profile',
+          settingTile(
+            icon: Icons.person,
+            title: "Profile",
             onTap: () {
               Navigator.pushNamed(
                 context,
@@ -59,127 +58,77 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
 
-          _SettingsTile(
-            icon: Icons.lock_outline,
-            title: 'Privacy & Security',
+          settingTile(
+            icon: Icons.notifications,
+            title: "Notifications",
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text(
-                    'Privacy settings coming soon.',
-                  ),
+                  content: Text("Coming Soon"),
                 ),
               );
             },
           ),
 
-          SwitchListTile(
-            secondary: const Icon(Icons.dark_mode_outlined),
-            title: const Text('Dark Mode'),
-            value: false,
-            onChanged: (_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Dark mode will be available soon.',
-                  ),
-                ),
-              );
-            },
-          ),
-
-          _SettingsTile(
-            icon: Icons.notifications_outlined,
-            title: 'Notifications',
+          settingTile(
+            icon: Icons.security,
+            title: "Privacy",
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text(
-                    'Notification settings coming soon.',
-                  ),
+                  content: Text("Coming Soon"),
                 ),
               );
             },
           ),
 
-          _SettingsTile(
-            icon: Icons.description_outlined,
-            title: 'Terms & Privacy Policy',
+          settingTile(
+            icon: Icons.help,
+            title: "Help & Support",
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text(
-                    'Terms & Privacy Policy coming soon.',
-                  ),
+                  content: Text("Coming Soon"),
                 ),
               );
             },
           ),
 
-          _SettingsTile(
-            icon: Icons.info_outline,
-            title: 'About MediSync',
+          settingTile(
+            icon: Icons.info,
+            title: "About MediSync",
             onTap: () {
               showAboutDialog(
                 context: context,
-                applicationName: 'MediSync',
-                applicationVersion: '1.0.0',
-                applicationLegalese: '© 2026 MediSync',
+                applicationName: "MediSync",
+                applicationVersion: "1.0.0",
+                applicationLegalese:
+                "Digital Health Passport",
               );
             },
           ),
 
-          const Divider(height: 40),
+          const SizedBox(height: 30),
 
-          _SettingsTile(
-            icon: Icons.logout,
-            iconColor: Colors.red,
-            textColor: Colors.red,
-            title: 'Logout',
-            onTap: () {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AppRoutes.login,
-                    (route) => false,
-              );
-            },
+          SizedBox(
+            height: 55,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.login,
+                      (route) => false,
+                );
+              },
+              icon: const Icon(Icons.logout),
+              label: const Text("Logout"),
+            ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _SettingsTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-  final Color? iconColor;
-  final Color? textColor;
-
-  const _SettingsTile({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-    this.iconColor,
-    this.textColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: iconColor,
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: textColor,
-        ),
-      ),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: onTap,
     );
   }
 }
