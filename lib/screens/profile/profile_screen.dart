@@ -38,9 +38,27 @@ String? selectedBloodGroup;
 
 @override
 void initState() {
-super.initState();
-loadProfile();
+  super.initState();
+  loadProfile();
 }
+Future<void> pickDate(TextEditingController controller) async {
+  FocusScope.of(context).unfocus();
+
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(1900),
+    lastDate: DateTime.now(),
+  );
+
+  if (picked != null) {
+    controller.text =
+    "${picked.day.toString().padLeft(2, '0')}/"
+        "${picked.month.toString().padLeft(2, '0')}/"
+        "${picked.year}";
+  }
+}
+
 
 Future<void> loadProfile() async {
 try {
@@ -141,23 +159,30 @@ super.dispose();
 }
 
 Widget buildTextField(
-String label,
-TextEditingController controller, {
-TextInputType keyboardType = TextInputType.text,
-}) {
-return Padding(
-padding: const EdgeInsets.only(bottom: 14),
-child: TextFormField(
-controller: controller,
-keyboardType: keyboardType,
-decoration: InputDecoration(
-labelText: label,
-border: OutlineInputBorder(
-borderRadius: BorderRadius.circular(12),
-),
-),
-),
-);
+    String label,
+    TextEditingController controller, {
+      TextInputType keyboardType = TextInputType.text,
+      bool readOnly = false,
+      VoidCallback? onTap,
+    }) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 14),
+    child: TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      readOnly: readOnly,
+      onTap: onTap,
+      decoration: InputDecoration(
+        labelText: label,
+        suffixIcon: readOnly
+            ? const Icon(Icons.calendar_month)
+            : null,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    ),
+  );
 }
 
 @override
@@ -220,6 +245,8 @@ builder: (_) => const LoginScreen(),
           buildTextField(
             "Date of Birth",
             dobController,
+            readOnly: true,
+            onTap: () => pickDate(dobController),
           ),
 
           DropdownButtonFormField<String>(
