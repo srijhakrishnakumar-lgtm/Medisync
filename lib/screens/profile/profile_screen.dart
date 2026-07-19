@@ -195,19 +195,20 @@ foregroundColor: Colors.white,
 actions: [
 IconButton(
 icon: const Icon(Icons.logout),
-onPressed: () async {
-await FirebaseAuth.instance.signOut();
+  onPressed: () async {
+    final navigator = Navigator.of(context);
 
-if (!mounted) return;
+    await FirebaseAuth.instance.signOut();
 
-Navigator.pushAndRemoveUntil(
-context,
-MaterialPageRoute(
-builder: (_) => const LoginScreen(),
-),
-(route) => false,
-);
-},
+    if (!mounted) return;
+
+    navigator.pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (_) => const LoginScreen(),
+      ),
+          (route) => false,
+    );
+  },
 ),
 ],
 ),

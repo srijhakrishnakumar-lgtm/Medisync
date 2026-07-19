@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -13,6 +14,7 @@ class NotificationService {
 
   Future<void> initialize() async {
     tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Asia/Kolkata'));
 
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -21,9 +23,24 @@ class NotificationService {
     );
 
     await notifications.initialize(settings);
+
+    await notifications
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+
+    await notifications
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestExactAlarmsPermission();
+
+    debugPrint("✅ Notification Service Initialized");
   }
 
-  NotificationDetails get _details {
+  Future<void> showInstantNotification({
+    required String title,
+    required String body,
+  }) async {
     const android = AndroidNotificationDetails(
       'medication_channel',
       'Medication Reminders',
@@ -32,20 +49,13 @@ class NotificationService {
       priority: Priority.high,
     );
 
-    return const NotificationDetails(
-      android: android,
-    );
-  }
+    const details = NotificationDetails(android: android);
 
-  Future<void> showInstantNotification({
-    required String title,
-    required String body,
-  }) async {
     await notifications.show(
       0,
       title,
       body,
-      _details,
+      details,
     );
   }
 
@@ -56,7 +66,7 @@ class NotificationService {
   }) async {
     final now = DateTime.now();
 
-    var scheduled = DateTime(
+    DateTime scheduled = DateTime(
       now.year,
       now.month,
       now.day,
@@ -68,15 +78,44 @@ class NotificationService {
       scheduled = scheduled.add(const Duration(days: 1));
     }
 
-    await notifications.zonedSchedule(
-      id,
-      "💊 Medication Reminder",
-      "It's time to take $medicine",
-      tz.TZDateTime.from(scheduled, tz.local),
-      _details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
+    final scheduledTZ = tz.TZDateTime.from(scheduled, tz.local);
+
+    const android = AndroidNotificationDetails(
+      'medication_channel',
+      'Medication Reminders',
+      channelDescription: 'Medication reminder notifications',
+      importance: Importance.max,
+      priority: Priority.high,
     );
+
+    const details = NotificationDetails(android: android);
+
+    try {
+      await notifications.zonedSchedule(
+        id,
+        'Medication Reminder',
+        'Time to take $medicine',
+        scheduledTZ,
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      );
+      final pending = await notifications.pendingNotificationRequests();
+
+      debugPrint("Pending notifications: ${pending.length}");
+
+      for (final n in pending) {
+        debugPrint("ID: ${n.id} | Title: ${n.title}");
+      }
+
+      debugPrint("✅ Scheduled notification");
+      debugPrint("ID: $id");
+      debugPrint("Medicine: $medicine");
+      debugPrint("Scheduled Time: $scheduledTZ");
+    } catch (e, stackTrace) {
+      debugPrint("❌ Scheduling failed");
+      debugPrint(e.toString());
+      debugPrintStack(stackTrace: stackTrace);
+    }
   }
 
   Future<void> cancelNotification(int id) async {
